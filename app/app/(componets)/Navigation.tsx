@@ -1,6 +1,6 @@
 export function Navigation() {
   return (
-    <div className="flex w-full flex-row items-center justify-between">
+    <div className="z-50 flex w-full flex-row items-center justify-between">
       <div>
         <svg
           width="89"
@@ -19,7 +19,7 @@ export function Navigation() {
           />
         </svg>
       </div>
-      <div>
+      <button>
         <svg
           width="43"
           height="43"
@@ -33,7 +33,7 @@ export function Navigation() {
             fill="black"
           />
         </svg>
-      </div>
+      </button>
     </div>
   )
 }
