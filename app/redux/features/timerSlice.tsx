@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit"
 const timerSlice = createSlice({
   name: "timer",
   initialState: {
+    isTimerOn: false,
+    remainingTime: 0,
     currentState: localStorage.getItem("timerType")
       ? localStorage.getItem("timerType")
       : "session",
@@ -17,6 +19,12 @@ const timerSlice = createSlice({
       : [],
   },
   reducers: {
+    setIsTimerOn(state, action) {
+      state.isTimerOn = action.payload
+    },
+    setRemainingTime(state, action) {
+      state.remainingTime = action.payload
+    },
     setTimerType(state, action) {
       state.currentState = action.payload
       localStorage.setItem("timerType", action.payload)
@@ -46,7 +54,14 @@ const timerSlice = createSlice({
   },
 })
 
-export const { setTimerType, editTimer, addTask, deleteTask, editTask } =
-  timerSlice.actions
+export const {
+  setIsTimerOn,
+  setRemainingTime,
+  setTimerType,
+  editTimer,
+  addTask,
+  deleteTask,
+  editTask,
+} = timerSlice.actions
 
 export default timerSlice.reducer

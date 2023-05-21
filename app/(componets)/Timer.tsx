@@ -4,41 +4,44 @@ import { useDispatch, useSelector } from "react-redux"
 import { Task } from "./Task"
 import { useEffect, useRef, useState } from "react"
 import { AppDispatch, RootState } from "@/app/redux/store/store"
-import { addTask, setTimerType } from "@/app/redux/features/timerSlice"
+import {
+  setIsTimerOn,
+  addTask,
+  setTimerType,
+  setRemainingTime,
+} from "@/app/redux/features/timerSlice"
 import { motion } from "framer-motion"
 import * as Popover from "@radix-ui/react-popover"
 import { Cross2Icon } from "@radix-ui/react-icons"
+import { v4 as uuidv4 } from "uuid"
 
 export function Timer() {
   const taskName = useRef<HTMLInputElement>(null)
 
   const state = useSelector((state: RootState) => state.timer)
-  const { currentState, timePresets, tasks } = state
+  const { isTimerOn, remainingTime, currentState, timePresets, tasks } = state
   const dispatch: AppDispatch = useDispatch()
-
-  const [isTimerOn, setIsTimerOn] = useState<boolean>(false)
-  const [remainingTime, setRemainingTime] = useState<number>(
-    (currentState === "session" ? timePresets?.session : timePresets?.break) *
-      60 *
-      1000
-  )
 
   useEffect(() => {
     if (isTimerOn === false) return
     const interval = setInterval(() => {
-      setRemainingTime((prev) => prev - 1000)
+      dispatch(setRemainingTime(remainingTime - 1000))
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [remainingTime, isTimerOn])
+  }, [remainingTime, isTimerOn, currentState])
 
   useEffect(() => {
-    setRemainingTime(
-      (currentState === "session" ? timePresets?.session : timePresets?.break) *
-        60 *
-        1000
+    dispatch(
+      setRemainingTime(
+        (currentState === "session"
+          ? timePresets?.session
+          : timePresets?.break) *
+          60 *
+          1000
+      )
     )
-  }, [timePresets])
+  }, [timePresets, currentState])
 
   return (
     <div className="z-50 mt-8 flex flex-col items-center justify-between">
@@ -48,7 +51,7 @@ export function Timer() {
           onClick={() => {
             dispatch(setTimerType("session"))
             setRemainingTime(timePresets?.session * 60 * 1000)
-            setIsTimerOn(false)
+            dispatch(setIsTimerOn(false))
           }}
           className={`h-11 w-44 rounded-lg bg-[#464646]/40 text-xl font-medium ${
             currentState === "session" ? "text-[#5BFFA7]/80" : "text-white/80"
@@ -60,7 +63,7 @@ export function Timer() {
           onClick={() => {
             dispatch(setTimerType("break"))
             setRemainingTime(timePresets?.break * 60 * 1000)
-            setIsTimerOn(false)
+            dispatch(setIsTimerOn(false))
           }}
           className={`h-11 w-44 rounded-lg bg-[#464646]/40 text-xl font-medium ${
             currentState === "break" ? "text-[#5BFFA7]/80" : "text-white/80"
@@ -139,6 +142,7 @@ export function Timer() {
                     onClick={() =>
                       dispatch(
                         addTask({
+                          id: uuidv4(),
                           name: taskName.current?.value,
                           checked: false,
                         })
@@ -177,7 +181,7 @@ export function Timer() {
                   duration: 0.1,
                   ease: "linear",
                 }}
-                onClick={() => setIsTimerOn((prev) => !prev)}
+                onClick={() => dispatch(setIsTimerOn(!isTimerOn))}
                 className=" z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#00FF75] transition-all ease-in-out hover:bg-[#0bb65b]"
               >
                 <svg
@@ -213,7 +217,7 @@ export function Timer() {
                   ease: "linear",
                 }}
                 onClick={() => {
-                  setIsTimerOn(false)
+                  dispatch(setIsTimerOn(false))
                   setRemainingTime(
                     (currentState === "session"
                       ? timePresets?.session
@@ -251,7 +255,7 @@ export function Timer() {
           ) : (
             <div className="flex w-14 flex-row items-center justify-between">
               <div
-                onClick={() => setIsTimerOn((prev) => !prev)}
+                onClick={() => dispatch(setIsTimerOn(!isTimerOn))}
                 className="z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#00FF75] transition-all ease-in-out hover:bg-[#0bb65b]"
               >
                 <svg
