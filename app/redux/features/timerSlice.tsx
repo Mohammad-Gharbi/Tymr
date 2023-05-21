@@ -5,18 +5,27 @@ const timerSlice = createSlice({
   initialState: {
     isTimerOn: false,
     remainingTime: 0,
-    currentState: localStorage.getItem("timerType")
-      ? localStorage.getItem("timerType")
-      : "session",
-    timePresets: localStorage.getItem("timerPresets")
-      ? JSON.parse(localStorage.getItem("timerPresets")!)
-      : {
-          session: 45,
-          break: 15,
-        },
-    tasks: localStorage.getItem("tasks")
-      ? JSON.parse(localStorage.getItem("tasks")!)
-      : [],
+    currentState:
+      typeof window !== "undefined"
+        ? localStorage.getItem("timerType")
+          ? localStorage.getItem("timerType")
+          : "session"
+        : "",
+    timePresets:
+      typeof window !== "undefined"
+        ? localStorage.getItem("timerPresets")
+          ? JSON.parse(localStorage.getItem("timerPresets")!)
+          : {
+              session: 45,
+              break: 15,
+            }
+        : {},
+    tasks:
+      typeof window !== "undefined"
+        ? localStorage.getItem("tasks")
+          ? JSON.parse(localStorage.getItem("tasks")!)
+          : []
+        : [],
   },
   reducers: {
     setIsTimerOn(state, action) {
