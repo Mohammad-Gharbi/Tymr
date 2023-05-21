@@ -1,5 +1,6 @@
 import "./globals.css"
 import { DM_Sans } from "next/font/google"
+import ReduxProvider from "./redux/ReduxProvider"
 
 const dm_sans = DM_Sans({
   weight: ["400", "500", "700"],
@@ -17,7 +18,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={dm_sans.className}>{children}</body>
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
+      <body
+        className={`${dm_sans.className}  h-screen w-screen bg-black px-28 py-4 text-white`}
+      >
+        <ReduxProvider>{children}</ReduxProvider>
+      </body>
     </html>
   )
 }
