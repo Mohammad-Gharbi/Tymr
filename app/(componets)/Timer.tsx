@@ -29,7 +29,7 @@ export function Timer() {
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [remainingTime, isTimerOn, currentState])
+  }, [remainingTime, isTimerOn, currentState, dispatch])
 
   useEffect(() => {
     dispatch(
@@ -41,7 +41,7 @@ export function Timer() {
           1000
       )
     )
-  }, [timePresets, currentState])
+  }, [timePresets, currentState, dispatch])
 
   return (
     <div className="z-50 mt-8 flex flex-col items-center justify-between">
