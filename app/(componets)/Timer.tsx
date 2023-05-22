@@ -87,7 +87,7 @@ export function Timer() {
               1000)
           }
           capIsRound
-          thickness="8px"
+          thickness="6px"
           size="256px"
         >
           <CircularProgressLabel>
