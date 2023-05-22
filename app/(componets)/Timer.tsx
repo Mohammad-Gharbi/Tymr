@@ -14,6 +14,7 @@ import { motion } from "framer-motion"
 import * as Popover from "@radix-ui/react-popover"
 import { Cross2Icon } from "@radix-ui/react-icons"
 import { v4 as uuidv4 } from "uuid"
+import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react"
 
 export function Timer() {
   const taskName = useRef<HTMLInputElement>(null)
@@ -73,15 +74,33 @@ export function Timer() {
         </button>
       </div>
       {/* Countdown Timer */}
-      <div className="mt-8 flex h-64 w-64 flex-col items-center justify-center rounded-full border-8 border-white border-opacity-40">
-        <div className="w-64 text-center text-4xl font-bold text-white">
-          {remainingTime ? Math.floor(remainingTime / 60 / 1000) : ""} :{" "}
-          {remainingTime
-            ? (remainingTime / 1000) % 60 < 10
-              ? `0${(remainingTime / 1000) % 60}`
-              : `${(remainingTime / 1000) % 60}`
-            : ""}
-        </div>
+      <div className="mt-8">
+        <CircularProgress
+          color="green.400"
+          trackColor="gray.100"
+          value={
+            (remainingTime * 100) /
+            ((currentState === "session"
+              ? timePresets?.session
+              : timePresets?.break) *
+              60 *
+              1000)
+          }
+          capIsRound
+          thickness="8px"
+          size="256px"
+        >
+          <CircularProgressLabel>
+            <div className="w-64 text-center text-4xl font-bold text-white">
+              {remainingTime ? Math.floor(remainingTime / 60 / 1000) : ""} :{" "}
+              {remainingTime
+                ? (remainingTime / 1000) % 60 < 10
+                  ? `0${(remainingTime / 1000) % 60}`
+                  : `${(remainingTime / 1000) % 60}`
+                : ""}
+            </div>
+          </CircularProgressLabel>
+        </CircularProgress>
       </div>
       {/* Tasks */}
       <div className="z-50 mt-8">
@@ -223,12 +242,14 @@ export function Timer() {
                 }}
                 onClick={() => {
                   dispatch(setIsTimerOn(false))
-                  setRemainingTime(
-                    (currentState === "session"
-                      ? timePresets?.session
-                      : timePresets?.break) *
-                      1000 *
-                      60
+                  dispatch(
+                    setRemainingTime(
+                      (currentState === "session"
+                        ? timePresets?.session
+                        : timePresets?.break) *
+                        1000 *
+                        60
+                    )
                   )
                 }}
                 className=" z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#00FF75] transition-all ease-in-out hover:bg-[#0bb65b]"
