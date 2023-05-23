@@ -69,7 +69,15 @@ export function Timer() {
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [remainingTime, isTimerOn, currentState, dispatch])
+  }, [
+    remainingTime,
+    isTimerOn,
+    currentState,
+    dispatch,
+    timePresets?.sesion,
+    timePresets?.break,
+    toast,
+  ])
 
   useEffect(() => {
     dispatch(

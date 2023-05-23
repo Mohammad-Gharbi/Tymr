@@ -3,7 +3,7 @@
 import { editTimer } from "@/app/redux/features/timerSlice"
 import { AppDispatch, RootState } from "@/app/redux/store/store"
 import { useDispatch, useSelector } from "react-redux"
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import {
   Modal,
   ModalOverlay,
@@ -31,7 +31,7 @@ export function Navigation() {
 
   const dispatch: AppDispatch = useDispatch()
 
-  const { handleSubmit, register } = useForm({
+  const { control, handleSubmit, register } = useForm({
     defaultValues: {
       session: timePresets.session,
       break: timePresets.break,
@@ -106,37 +106,51 @@ export function Navigation() {
                   <div className="text-lg font-medium text-black">
                     Session(min)
                   </div>
-                  <NumberInput
-                    className="w-44 text-black focus:outline-[#5BFFA7]"
-                    defaultValue={timePresets?.session}
-                    colorScheme="green"
-                    {...register("session")}
-                    min={1}
-                  >
-                    <NumberInputField />
-                    <NumberInputStepper>
-                      <NumberIncrementStepper />
-                      <NumberDecrementStepper />
-                    </NumberInputStepper>
-                  </NumberInput>
+
+                  <Controller
+                    control={control}
+                    name="session"
+                    render={({ field: { ref, ...restField } }) => (
+                      <NumberInput
+                        className="w-44 text-black focus:outline-[#5BFFA7]"
+                        defaultValue={timePresets?.session}
+                        colorScheme="green"
+                        min={1}
+                        {...restField}
+                      >
+                        <NumberInputField ref={ref} name={restField.name} />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                    )}
+                  />
                 </div>
                 <div>
                   <div className="text-lg font-medium text-black">
                     Break(min)
                   </div>
-                  <NumberInput
-                    className="w-44 text-black focus:outline-[#5BFFA7]"
-                    defaultValue={timePresets?.break}
-                    min={1}
-                    colorScheme="green"
-                    {...register("break")}
-                  >
-                    <NumberInputField />
-                    <NumberInputStepper>
-                      <NumberIncrementStepper />
-                      <NumberDecrementStepper />
-                    </NumberInputStepper>
-                  </NumberInput>
+
+                  <Controller
+                    control={control}
+                    name="session"
+                    render={({ field: { ref, ...restField } }) => (
+                      <NumberInput
+                        className="w-44 text-black focus:outline-[#5BFFA7]"
+                        defaultValue={timePresets?.break}
+                        min={1}
+                        colorScheme="green"
+                        {...restField}
+                      >
+                        <NumberInputField ref={ref} name={restField.name} />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                    )}
+                  />
                 </div>
               </div>
             </ModalBody>
