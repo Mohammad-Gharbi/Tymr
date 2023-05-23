@@ -187,7 +187,11 @@ export function Timer() {
               <form
                 onSubmit={handleSubmit((data) => {
                   dispatch(
-                    addTask({ id: uuidv4(), name: data.task, checked: false })
+                    addTask({
+                      id: uuidv4(),
+                      name: data.task,
+                      checked: false,
+                    })
                   )
                 })}
               >

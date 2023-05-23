@@ -4,13 +4,18 @@ const timerSlice = createSlice({
   name: "timer",
   initialState: {
     isTimerOn: false,
-    remainingTime: 0,
+    remainingTime:
+      typeof window !== "undefined"
+        ? localStorage.getItem("remainingTime")
+          ? JSON.parse(localStorage.getItem("remainingTime")!)
+          : 0
+        : 0,
     currentState:
       typeof window !== "undefined"
         ? localStorage.getItem("timerType")
           ? localStorage.getItem("timerType")
           : "session"
-        : "",
+        : "session",
     timePresets:
       typeof window !== "undefined"
         ? localStorage.getItem("timerPresets")
@@ -33,6 +38,7 @@ const timerSlice = createSlice({
     },
     setRemainingTime(state, action) {
       state.remainingTime = action.payload
+      localStorage.setItem("remainingTime", JSON.stringify(action.payload))
     },
     setTimerType(state, action) {
       state.currentState = action.payload
