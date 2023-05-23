@@ -1,32 +1,71 @@
 "use client"
 
+import { v4 as uuidv4 } from "uuid"
 import { useDispatch, useSelector } from "react-redux"
-import { Task } from "./Task"
-import { useEffect, useRef, useState } from "react"
 import { AppDispatch, RootState } from "@/app/redux/store/store"
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { useToast } from "@chakra-ui/react"
+import { Task } from "./Task"
+import { motion } from "framer-motion"
+import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react"
+import { Input } from "@chakra-ui/react"
 import {
   setIsTimerOn,
   addTask,
   setTimerType,
   setRemainingTime,
 } from "@/app/redux/features/timerSlice"
-import { motion } from "framer-motion"
-import * as Popover from "@radix-ui/react-popover"
-import { Cross2Icon } from "@radix-ui/react-icons"
-import { v4 as uuidv4 } from "uuid"
-import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react"
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Button,
+} from "@chakra-ui/react"
 
 export function Timer() {
-  const taskName = useRef<HTMLInputElement>(null)
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const toast = useToast()
+
+  const { handleSubmit, register } = useForm({
+    defaultValues: {
+      task: "",
+    },
+  })
 
   const state = useSelector((state: RootState) => state.timer)
   const { isTimerOn, remainingTime, currentState, timePresets, tasks } = state
+
   const dispatch: AppDispatch = useDispatch()
 
   useEffect(() => {
     if (isTimerOn === false) return
     const interval = setInterval(() => {
-      dispatch(setRemainingTime(remainingTime - 1000))
+      if (remainingTime !== 0) {
+        dispatch(setRemainingTime(remainingTime - 1000))
+      } else if (remainingTime === 0) {
+        dispatch(setIsTimerOn(false))
+        dispatch(
+          setRemainingTime(
+            (currentState === "session"
+              ? timePresets?.session
+              : timePresets?.break) *
+              60 *
+              1000
+          )
+        )
+        toast({
+          title: "Time Up",
+          status: "success",
+          isClosable: true,
+        })
+      }
     }, 1000)
 
     return () => clearInterval(interval)
@@ -106,81 +145,68 @@ export function Timer() {
       <div className="z-50 mt-8">
         <div className="flex w-96 flex-row items-center justify-between border-b border-[#5BFFA7] border-opacity-80 text-lg text-white">
           <div>Tasks</div>
-          <Popover.Root>
-            <Popover.Trigger asChild>
-              <button>
-                <svg
-                  width="19"
-                  height="19"
-                  viewBox="0 0 19 19"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M9.5 3.95833V15.0417"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M3.95834 9.5H15.0417"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </button>
-            </Popover.Trigger>
-            <Popover.Portal>
-              <Popover.Content
-                className="data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade z-50 w-[260px] rounded bg-white p-5 shadow-[0_10px_38px_-10px_hsla(206,22%,7%,.35),0_10px_20px_-15px_hsla(206,22%,7%,.2)] will-change-[transform,opacity] focus:shadow-[0_10px_38px_-10px_hsla(206,22%,7%,.35),0_10px_20px_-15px_hsla(206,22%,7%,.2),0_0_0_2px_theme(colors.violet7)]"
-                sideOffset={5}
+
+          <button onClick={onOpen}>
+            <svg
+              width="19"
+              height="19"
+              viewBox="0 0 19 19"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9.5 3.95833V15.0417"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M3.95834 9.5H15.0417"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader className="text-black">Add Task</ModalHeader>
+              <ModalCloseButton />
+              <form
+                onSubmit={handleSubmit((data) => {
+                  dispatch(
+                    addTask({ id: uuidv4(), name: data.task, checked: false })
+                  )
+                })}
               >
-                <div className="flex flex-col gap-2.5">
-                  <p className="text-mauve12 mb-2.5 text-[15px] font-medium leading-[19px]">
-                    Add Task
-                  </p>
-                  <fieldset className="flex items-center gap-5">
-                    <label
-                      className="text-violet11 w-[75px] text-[13px]"
-                      htmlFor="name"
-                    >
-                      Task Name
-                    </label>
-                    <input
-                      className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[25px] w-full flex-1 items-center justify-center rounded px-2.5 text-[13px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
-                      id="name"
-                      type="text"
-                      placeholder="Enter Task Name"
-                      ref={taskName}
-                    />
-                  </fieldset>
-                  <button
-                    onClick={() =>
-                      dispatch(
-                        addTask({
-                          id: uuidv4(),
-                          name: taskName.current?.value,
-                          checked: false,
-                        })
-                      )
-                    }
+                <ModalBody>
+                  <div className="flex flex-row items-center justify-between gap-2">
+                    <div>
+                      <Input
+                        className="text-black"
+                        placeholder="Enter Task Name"
+                        {...register("task")}
+                      />
+                    </div>
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    colorScheme="green"
+                    mr={3}
+                    type="submit"
+                    onClick={onClose}
                   >
-                    Add
-                  </button>
-                </div>
-                <Popover.Close
-                  className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute right-[5px] top-[5px] inline-flex h-[25px] w-[25px] cursor-default items-center justify-center rounded-full outline-none focus:shadow-[0_0_0_2px]"
-                  aria-label="Close"
-                >
-                  <Cross2Icon />
-                </Popover.Close>
-                <Popover.Arrow className="fill-white" />
-              </Popover.Content>
-            </Popover.Portal>
-          </Popover.Root>
+                    Save
+                  </Button>
+                </ModalFooter>
+              </form>
+            </ModalContent>
+          </Modal>
         </div>
         <div className="mb-12 flex w-96 flex-col items-center overflow-y-scroll">
           {tasks.map((task: any) => (

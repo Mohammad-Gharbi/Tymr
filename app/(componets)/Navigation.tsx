@@ -2,10 +2,8 @@
 
 import { editTimer } from "@/app/redux/features/timerSlice"
 import { AppDispatch, RootState } from "@/app/redux/store/store"
-import * as Dialog from "@radix-ui/react-dialog"
-import { Cross2Icon } from "@radix-ui/react-icons"
-import { useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { useForm } from "react-hook-form"
 import {
   Modal,
   ModalOverlay,
@@ -24,14 +22,14 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
 } from "@chakra-ui/react"
-import { useForm } from "react-hook-form"
 
 export function Navigation() {
-  const state = useSelector((state: RootState) => state.timer)
-  const { currentState, timePresets } = state
-  const dispatch: AppDispatch = useDispatch()
-
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const state = useSelector((state: RootState) => state.timer)
+  const { timePresets } = state
+
+  const dispatch: AppDispatch = useDispatch()
 
   const { handleSubmit, register } = useForm({
     defaultValues: {
@@ -111,9 +109,9 @@ export function Navigation() {
                   <NumberInput
                     className="w-44 text-black focus:outline-[#5BFFA7]"
                     defaultValue={timePresets?.session}
-                    min={1}
                     colorScheme="green"
                     {...register("session")}
+                    min={1}
                   >
                     <NumberInputField />
                     <NumberInputStepper>
