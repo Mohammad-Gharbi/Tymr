@@ -134,7 +134,7 @@ export function Navigation() {
 
                   <Controller
                     control={control}
-                    name="session"
+                    name="break"
                     render={({ field: { ref, ...restField } }) => (
                       <NumberInput
                         className="w-44 text-black focus:outline-[#5BFFA7]"
