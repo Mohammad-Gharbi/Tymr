@@ -22,7 +22,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body
-        className={`${dm_sans.className}  h-screen w-screen bg-black px-28 py-4 text-white`}
+        className={`${dm_sans.className}  h-screen w-screen bg-black px-3 py-4 text-white md:px-28`}
       >
         <ReduxProvider>{children}</ReduxProvider>
       </body>

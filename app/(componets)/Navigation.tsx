@@ -39,7 +39,7 @@ export function Navigation() {
   })
 
   return (
-    <div className="z-50 flex w-full flex-row items-center justify-between text-black">
+    <div className="z-50 flex w-full flex-col items-center justify-between text-black md:flex-row">
       <div>
         <svg
           width="89"

@@ -39,14 +39,14 @@ export function Task({
   })
 
   return (
-    <div className="z-50 mt-2 flex h-8 w-80 flex-row items-center justify-between rounded-lg bg-[#4A6958]/50 p-1 text-base font-medium">
+    <div className="mt-2 flex h-8 w-80 flex-row items-center justify-between rounded-lg bg-[#4A6958]/50 p-1 px-4 text-base font-medium">
       <div className=" flex flex-row items-center justify-start  ">
         <Checkbox colorScheme="green">{name}</Checkbox>
       </div>
 
       <Menu>
         <MenuButton>
-          <button>
+          <button className="flex flex-col items-center justify-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"

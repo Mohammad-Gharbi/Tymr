@@ -95,7 +95,7 @@ export function Timer() {
     return (
       <div className="z-50 mt-8 flex flex-col items-center justify-between">
         {/* Session & Break Buttons */}
-        <div className="items center flex w-96 flex-row justify-between">
+        <div className="items center flex w-[23rem] flex-row justify-between">
           <button
             onClick={() => {
               dispatch(setTimerType("session"))
@@ -153,8 +153,8 @@ export function Timer() {
           </CircularProgress>
         </div>
         {/* Tasks */}
-        <div className="z-50 mt-8">
-          <div className="flex w-96 flex-row items-center justify-between border-b border-[#5BFFA7] border-opacity-80 text-lg text-white">
+        <div className="z-50 mt-8 flex  flex-col items-center justify-center">
+          <div className="flex  w-[22rem] flex-row items-center justify-between border-b border-[#5BFFA7] border-opacity-80 text-lg text-white">
             <div>Tasks</div>
 
             <button onClick={onOpen}>
