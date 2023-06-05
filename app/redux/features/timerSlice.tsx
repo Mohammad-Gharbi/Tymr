@@ -1,17 +1,34 @@
 import { createSlice } from "@reduxjs/toolkit"
 
+interface initialState {
+  isTimerOn: boolean
+  remainingTime: number
+  currentState: string
+  timePresets: {
+    session: number
+    break: number
+  }
+  tasks: {
+    id: string
+    name: string
+    checked: boolean
+  }[]
+}
+
+const initialState: initialState = {
+  isTimerOn: false,
+  remainingTime: 0,
+  currentState: "session",
+  timePresets: {
+    session: 45,
+    break: 15,
+  },
+  tasks: [],
+}
+
 const timerSlice = createSlice({
   name: "timer",
-  initialState: {
-    isTimerOn: false,
-    remainingTime: 0,
-    currentState: "session",
-    timePresets: {
-      session: 45,
-      break: 15,
-    },
-    tasks: [{}],
-  },
+  initialState,
   reducers: {
     setIsTimerOn(state, action) {
       state.isTimerOn = action.payload

@@ -221,14 +221,14 @@ export function Timer() {
           </Modal>
         </div>
         <div className="mb-12 flex w-96 flex-col items-center overflow-y-scroll">
-          {/* {tasks.map((task: any) => (
+          {tasks.map((task: any) => (
             <Task
               key={task.id}
               id={task.id}
               name={task.name}
               checked={task.checked}
             />
-          ))} */}
+          ))}
         </div>
       </div>
       {/* Start & Pause Button */}
