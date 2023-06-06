@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit"
 interface initialState {
   isTimerOn: boolean
   remainingTime: number
-  currentState: string
+  currentState: string | null
   timePresets: {
     session: number
     break: number
@@ -18,7 +18,7 @@ interface initialState {
 const initialState: initialState = {
   isTimerOn: false,
   remainingTime: 0,
-  currentState: "session",
+  currentState: "seesion",
   timePresets: {
     session: 45,
     break: 15,
@@ -38,6 +38,7 @@ const timerSlice = createSlice({
     },
     setTimerType(state, action) {
       state.currentState = action.payload
+      localStorage.setItem("timerType", action.payload)
     },
     editTimer(state, action) {
       state.timePresets = action.payload // payload:{session:30, break: 10}
@@ -53,7 +54,11 @@ const timerSlice = createSlice({
     editTask(state, action) {
       state.tasks = state.tasks.map((task: any) => {
         if (task.id === action.payload.id) {
-          return { id: task.id, name: action.payload.name, checked: false }
+          return {
+            id: task.id,
+            name: action.payload.name,
+            checked: action.payload.checked,
+          }
         } else {
           return task
         }

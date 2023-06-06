@@ -41,7 +41,21 @@ export function Task({
   return (
     <div className="mt-2 flex h-8 w-80 flex-row items-center justify-between rounded-lg bg-[#4A6958]/50 p-1 px-4 text-base font-medium">
       <div className=" flex flex-row items-center justify-start  ">
-        <Checkbox colorScheme="green">{name}</Checkbox>
+        <Checkbox
+          onChange={() =>
+            dispatch(
+              editTask({
+                id: id,
+                name: name,
+                checked: !checked,
+              })
+            )
+          }
+          colorScheme="green"
+          isChecked={checked}
+        >
+          {name}
+        </Checkbox>
       </div>
 
       <Menu>
@@ -84,6 +98,7 @@ export function Task({
                       editTask({
                         id: id,
                         name: data.task,
+                        checked: false,
                       })
                     )
                   })}

@@ -29,8 +29,7 @@ import {
 } from "@chakra-ui/react"
 
 export function Timer() {
-  const state = useSelector((state: RootState) => state.timer)
-  const { isTimerOn, remainingTime, currentState, timePresets, tasks } = state
+  const state = useSelector((state: RootState) => state)
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -45,17 +44,17 @@ export function Timer() {
   const dispatch: AppDispatch = useDispatch()
 
   useEffect(() => {
-    if (isTimerOn === false) return
+    if (state.isTimerOn === false) return
     const interval = setInterval(() => {
-      if (remainingTime !== 0) {
-        dispatch(setRemainingTime(remainingTime - 1000))
-      } else if (remainingTime === 0) {
+      if (state.remainingTime !== 0) {
+        dispatch(setRemainingTime(state.remainingTime - 1000))
+      } else if (state.remainingTime === 0) {
         dispatch(setIsTimerOn(false))
         dispatch(
           setRemainingTime(
-            (currentState === "session"
-              ? timePresets?.session
-              : timePresets?.break) *
+            (state.currentState === "session"
+              ? state.timePresets?.session
+              : state.timePresets?.break) *
               60 *
               1000
           )
@@ -70,26 +69,26 @@ export function Timer() {
 
     return () => clearInterval(interval)
   }, [
-    remainingTime,
-    isTimerOn,
-    currentState,
+    state.remainingTime,
+    state.isTimerOn,
+    state.currentState,
     dispatch,
-    timePresets?.session,
-    timePresets?.break,
+    state.timePresets?.session,
+    state.timePresets?.break,
     toast,
   ])
 
   useEffect(() => {
     dispatch(
       setRemainingTime(
-        (currentState === "session"
-          ? timePresets?.session
-          : timePresets?.break) *
+        (state.currentState === "session"
+          ? state.timePresets?.session
+          : state.timePresets?.break) *
           60 *
           1000
       )
     )
-  }, [timePresets, currentState, dispatch])
+  }, [state.timePresets, state.currentState, dispatch])
 
   return (
     <div className="z-50 mt-8 flex flex-col items-center justify-between">
@@ -98,11 +97,13 @@ export function Timer() {
         <button
           onClick={() => {
             dispatch(setTimerType("session"))
-            setRemainingTime(timePresets?.session * 60 * 1000)
+            setRemainingTime(state.timePresets?.session * 60 * 1000)
             dispatch(setIsTimerOn(false))
           }}
           className={`h-11 w-44 rounded-lg bg-[#464646]/40 text-xl font-medium ${
-            currentState === "session" ? "text-[#5BFFA7]/80" : "text-white/80"
+            state.currentState === "session"
+              ? "text-[#5BFFA7]/80"
+              : "text-white/80"
           } shadow-inner transition-all ease-in-out hover:bg-[#646464]/40 hover:text-[#5BFFA7]/80`}
         >
           Session
@@ -110,11 +111,13 @@ export function Timer() {
         <button
           onClick={() => {
             dispatch(setTimerType("break"))
-            setRemainingTime(timePresets?.break * 60 * 1000)
+            setRemainingTime(state.timePresets?.break * 60 * 1000)
             dispatch(setIsTimerOn(false))
           }}
           className={`h-11 w-44 rounded-lg bg-[#464646]/40 text-xl font-medium ${
-            currentState === "break" ? "text-[#5BFFA7]/80" : "text-white/80"
+            state.currentState === "break"
+              ? "text-[#5BFFA7]/80"
+              : "text-white/80"
           } shadow-inner transition-all ease-in-out hover:bg-[#646464]/40 hover:text-[#5BFFA7]/80`}
         >
           Break
@@ -126,10 +129,10 @@ export function Timer() {
           color="green.400"
           trackColor="gray.100"
           value={
-            (remainingTime * 100) /
-            ((currentState === "session"
-              ? timePresets?.session
-              : timePresets?.break) *
+            (state.remainingTime * 100) /
+            ((state.currentState === "session"
+              ? state.timePresets?.session
+              : state.timePresets?.break) *
               60 *
               1000)
           }
@@ -139,11 +142,14 @@ export function Timer() {
         >
           <CircularProgressLabel>
             <div className="w-64 text-center text-4xl font-bold text-white">
-              {remainingTime ? Math.floor(remainingTime / 60 / 1000) : ""} :{" "}
-              {remainingTime
-                ? (remainingTime / 1000) % 60 < 10
-                  ? `0${(remainingTime / 1000) % 60}`
-                  : `${(remainingTime / 1000) % 60}`
+              {state.remainingTime
+                ? Math.floor(state.remainingTime / 60 / 1000)
+                : ""}{" "}
+              :{" "}
+              {state.remainingTime
+                ? (state.remainingTime / 1000) % 60 < 10
+                  ? `0${(state.remainingTime / 1000) % 60}`
+                  : `${(state.remainingTime / 1000) % 60}`
                 : ""}
             </div>
           </CircularProgressLabel>
@@ -221,7 +227,7 @@ export function Timer() {
           </Modal>
         </div>
         <div className="mb-12 flex w-96 flex-col items-center overflow-y-scroll">
-          {tasks.map((task: any) => (
+          {state.tasks.map((task: any) => (
             <Task
               key={task.id}
               id={task.id}
@@ -234,7 +240,7 @@ export function Timer() {
       {/* Start & Pause Button */}
       <div>
         <div className="relative  flex w-96 flex-row items-center justify-center">
-          {isTimerOn ? (
+          {state.isTimerOn ? (
             <div className="flex w-40 flex-row items-center justify-between">
               <motion.div
                 initial={{ opacity: 0, x: 0 }}
@@ -243,7 +249,7 @@ export function Timer() {
                   duration: 0.1,
                   ease: "linear",
                 }}
-                onClick={() => dispatch(setIsTimerOn(!isTimerOn))}
+                onClick={() => dispatch(setIsTimerOn(!state.isTimerOn))}
                 className=" z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#00FF75] transition-all ease-in-out hover:bg-[#0bb65b]"
               >
                 <svg
@@ -282,9 +288,9 @@ export function Timer() {
                   dispatch(setIsTimerOn(false))
                   dispatch(
                     setRemainingTime(
-                      (currentState === "session"
-                        ? timePresets?.session
-                        : timePresets?.break) *
+                      (state.currentState === "session"
+                        ? state.timePresets?.session
+                        : state.timePresets?.break) *
                         1000 *
                         60
                     )
@@ -319,7 +325,7 @@ export function Timer() {
           ) : (
             <div className="flex w-14 flex-row items-center justify-between">
               <div
-                onClick={() => dispatch(setIsTimerOn(!isTimerOn))}
+                onClick={() => dispatch(setIsTimerOn(!state.isTimerOn))}
                 className="z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#00FF75] transition-all ease-in-out hover:bg-[#0bb65b]"
               >
                 <svg

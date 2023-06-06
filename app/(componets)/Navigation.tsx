@@ -26,15 +26,14 @@ import {
 export function Navigation() {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const state = useSelector((state: RootState) => state.timer)
-  const { timePresets } = state
+  const state = useSelector((state: RootState) => state)
 
   const dispatch: AppDispatch = useDispatch()
 
   const { control, handleSubmit, register } = useForm({
     defaultValues: {
-      session: timePresets.session,
-      break: timePresets.break,
+      session: state.timePresets.session,
+      break: state.timePresets.break,
     },
   })
 
@@ -113,7 +112,7 @@ export function Navigation() {
                     render={({ field: { ref, ...restField } }) => (
                       <NumberInput
                         className="w-44 text-black focus:outline-[#5BFFA7]"
-                        defaultValue={timePresets?.session}
+                        defaultValue={state.timePresets?.session}
                         colorScheme="green"
                         min={1}
                         {...restField}
@@ -138,7 +137,7 @@ export function Navigation() {
                     render={({ field: { ref, ...restField } }) => (
                       <NumberInput
                         className="w-44 text-black focus:outline-[#5BFFA7]"
-                        defaultValue={timePresets?.break}
+                        defaultValue={state.timePresets?.break}
                         min={1}
                         colorScheme="green"
                         {...restField}
