@@ -8,7 +8,7 @@ const dm_sans = DM_Sans({
 })
 
 export const metadata = {
-  title: "Tymr.",
+  title: "flow.",
 }
 
 export default function RootLayout({
